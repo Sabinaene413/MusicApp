@@ -1,0 +1,32 @@
+﻿@using MusicApp.Data.Entities
+@using MusicApp.Data
+
+@model SongDataForEdit
+
+<div class="bg-secondary rounded h-100 p-4">
+    <h6 class="mb-4">Edit Song</h6>
+
+    <form method="POST" action="/song/UpdateSong">
+
+        <input type="hidden" name="Id" value="@Model.Song.Id" />
+
+        <div class="form-group">
+            <label for="Name">Name</label>
+            <input type="text" name="Name" id="Name" class="form-control" value="@Model.Song.Name" />
+        </div>
+
+        <div class="form-group">
+            <label for="SelectedArtists" class="form-label mt-4">Artists</label>
+            <select id="SelectedArtists" name="SelectedArtists" class="form-select" multiple>
+                @foreach (var artist in Model.Artists)
+                {
+                    <option value="@artist.Id">@artist.Name</option>
+                }
+            </select>
+        </div>
+
+        <hr />
+        <input class="btn btn-outline-info m-2" type="submit" value="Update" />
+
+    </form>
+</div>

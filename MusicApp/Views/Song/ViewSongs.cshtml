@@ -1,0 +1,39 @@
+﻿@using MusicApp.Data;
+@using MusicApp.Data.ForViews
+@model List<SongView>
+
+
+
+
+<div class="bg-secondary rounded h-100 p-4">
+    <a class="btn btn-success rounded-pill m-2" style="float: right; margin-bottom: 4px;"
+       href="/song/addsong">Adauga Melodie</a>
+   <h6 class="mb-4">Melodii</h6>
+    <table class="table table-hover">
+    <thead>
+        <tr>
+                <th scope="col">#</th>
+                <th scope="col">Song</th>
+                <th scope="col">Artists</th>
+                <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var song in Model)
+        {
+            <tr>
+                    <th scope="row">@song.Id</th>
+                    <td>@song.Name</td>
+                    <td>@string.Join(", ", song.ArtistNames)</td>
+                    <td>
+                        <span style="float: right;">
+                            <a class="btn btn-warning ml-2" href="/song/editsong?id=@song.Id">Edit</a>
+                            <a class="btn btn-primary ml-2" href="/song/deletesong?id=@song.Id"> Delete</a>
+                        </span>
+                    </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+</div>

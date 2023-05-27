@@ -1,0 +1,39 @@
+﻿@using MusicApp.Data
+@using MusicApp.Data.Entities
+@model List<PlayList>
+
+<div class="bg-secondary rounded h-100 p-4">
+
+    @*buton adauga artist*@
+
+    <a class="btn btn-success rounded-pill m-2" style="float: right; margin-bottom: 4px;"
+       href="/playlist/addplaylist">Adauga PlayList</a>
+
+
+    <h6 class="mb-4">PlayListuri</h6>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nume</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var playList in Model)
+            {
+                <tr>
+                    <th scope="row">@playList.Id</th>
+                    <td>@playList.Name</td>
+                    <td>
+                        <span style="float: right"> 
+                            <a class="btn btn-info m-2" href="/playlist/viewplaylist?id=@playList.Id">Go to PlayList</a>
+                            <a class="btn btn-warning ml-2" href="/artist/editartist?id=@playList.Id">Edit</a>
+                            <a class="btn btn-primary" href="/artist/deleteartist?id=@playList.Id"> Delete</a>
+                        </span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
