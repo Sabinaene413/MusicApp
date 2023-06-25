@@ -76,7 +76,7 @@ namespace MusicApp.Controllers
                 context.Artist.Add(artistDetails);
                 context.SaveChanges();
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("ViewArtists");
         }
 
 

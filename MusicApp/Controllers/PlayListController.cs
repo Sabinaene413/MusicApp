@@ -63,10 +63,38 @@ namespace MusicApp.Controllers
                 context.PlayListSongMap.AddRange(playListSong);
                 context.SaveChanges();
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("ViewPlayLists");
         }
 
-        public IActionResult ViewPlayList(int id)
+        public IActionResult DeletePlayList(int id)
+        {
+            var playlist = new PlayList();
+            using (var context = new MyDBContext())
+            {
+                playlist = context.PlayList.FirstOrDefault(a => a.Id == id);
+
+                context.PlayListSongMap.RemoveRange(context.PlayListSongMap.Where(x => x.PlayListId == playlist.Id));
+                context.SaveChanges();
+                context.PlayList.Remove(playlist);
+                context.SaveChanges();
+
+            }
+
+            return RedirectToAction("ViewPlayLists");
+        }
+
+        public IActionResult EditPlayList(int id)
+        {
+            var Data = new PlayListDataForEdit();
+            using (var context = new MyDBContext())
+            {
+                Data.PlayList = context.PlayList.FirstOrDefault(a => a.Id == id);
+                Data.Songs = context.Song.ToList();
+            }
+            return View(Data);
+        }
+
+        public IActionResult AudioPlayerView(int id)
         {
             var playList = new PlayList();
             var songArtistMap = new List<SongArtistMap>();
@@ -104,16 +132,17 @@ namespace MusicApp.Controllers
                 {
                     Id = song.Id,
                     Name = song.Name,
+                    FilePath = song.FilePath,
                     ArtistNames = associatedArtists
                 };
 
                 songData.Add(viewModel);
             }
 
-            var playListView = new PlayListView()
+            var playListView = new AudioPlayerView()
             {
-                PlayList = playList,
-                Songs = songData
+                CurrentPlayList = playList,
+                PlayListSongs = songData
             };
 
             return View(playListView);

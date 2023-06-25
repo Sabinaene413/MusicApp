@@ -3,6 +3,7 @@ using MusicApp.Data.Entities;
 using MusicApp.Data.ForViews;
 using MusicApp.Data.Maps;
 using MusicApp.Data;
+using System.IO;
 
 namespace MusicApp.Controllers
 {
@@ -25,20 +26,24 @@ namespace MusicApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdateSong(AddSongData songData)
+        public IActionResult UpdateSong(AddSongData songData, IFormFile userFile)
         {
+            string filename = userFile.FileName;
+            filename = Path.GetFileName(filename);
+            string uploadfilepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Files", filename);
+            var stream = new FileStream(uploadfilepath, FileMode.Create);
+            userFile.CopyToAsync(stream);
+
             using (var context = new MyDBContext())
             {
                 var existingSong = context.Song.FirstOrDefault(a => a.Id == songData.Id);
                 existingSong.Name = songData.Name;
-
-                var mappingsToDelete = context.SongArtistMap
-                    .Where(map => map.SongId == existingSong.Id)
-                    .ToList();
-                context.SongArtistMap.RemoveRange(mappingsToDelete);
+                existingSong.FilePath= "/Files/" + filename;
+                context.SongArtistMap.RemoveRange(context.SongArtistMap.Where(x => x.SongId == songData.Id));
+                context.PlayListSongMap.RemoveRange(context.PlayListSongMap.Where(x => x.SongId == songData.Id));
                 context.SaveChanges();
             }
-            //sterge maparile vechi si le introduce pe cele noi   || artisti
+            
             List<SongArtistMap> songArtists = new List<SongArtistMap>();
             foreach (var artist in songData.SelectedArtists)
             {
@@ -62,14 +67,17 @@ namespace MusicApp.Controllers
 
         public IActionResult DeleteSong(int id)
         {
+            var song = new Song();
             using (var context = new MyDBContext())
             {
-                var song = context.Song.FirstOrDefault(a => a.Id == id);
+                song = context.Song.FirstOrDefault(a => a.Id == id);
 
                 context.SongArtistMap.RemoveRange(context.SongArtistMap.Where(x => x.SongId == song.Id));
+                context.PlayListSongMap.RemoveRange(context.PlayListSongMap.Where(x => x.SongId == song.Id));
                 context.SaveChanges();
                 context.Song.Remove(song);
                 context.SaveChanges();
+
             }
 
             return RedirectToAction("ViewSongs");
@@ -86,18 +94,26 @@ namespace MusicApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddSong(AddSongData songAddData)
+        public IActionResult AddSong(AddSongData songAddData, IFormFile userFile)
         {
             Song song = new Song()
             {
                 Name = songAddData.Name,
             };
 
+            string filename = userFile.FileName;
+            filename = Path.GetFileName(filename);
+            string uploadfilepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Files", filename);
+            var stream = new FileStream(uploadfilepath, FileMode.Create);
+            userFile.CopyToAsync(stream);
+            song.FilePath = "/Files/" + filename;
+
             using (var context = new MyDBContext())
             {
                 context.Song.Add(song);
                 context.SaveChanges();
             }
+
             List<SongArtistMap> songArtists = new List<SongArtistMap>();
             foreach (var artist in songAddData.SelectedArtists)
             {
@@ -115,7 +131,10 @@ namespace MusicApp.Controllers
                 context.SongArtistMap.AddRange(songArtists);
                 context.SaveChanges();
             }
-            return RedirectToAction("Index");
+
+
+
+            return RedirectToAction("ViewSongs");
         }
 
         public IActionResult ViewSongs()
