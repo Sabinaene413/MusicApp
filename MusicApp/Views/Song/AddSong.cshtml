@@ -1,11 +1,12 @@
 ﻿@using MusicApp.Data;
 @using MusicApp.Data.Entities
+
 @model List<Artist>
 
 <div class="bg-secondary rounded h-100 p-4">
  <h6 class="mb-4">Adauga Melodie</h6>
 
-<form method="POST" action="/song/AddSong">
+<form method="POST" action="/song/AddSong" enctype="multipart/form-data">
 
     <div class="form-group">
 
@@ -22,6 +23,11 @@
             }
         </select>
     </div>
+
+     <div class="mb-3">
+            <label for="formFile" class="form-label">Default file input example</label>
+            <input class="form-control bg-dark" type="file" id="userFile" name="userfile">
+      </div>
 
     <hr />
         <input class="btn btn-outline-info m-2" type="submit" value="Adauga" />

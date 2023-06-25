@@ -1,0 +1,31 @@
+﻿@using MusicApp.Data
+@using MusicApp.Data.Entities
+@model PlayListDataForEdit
+
+<div class="bg-secondary rounded h-100 p-4">
+    <h6 class="mb-4">Editeaza PlayList</h6>
+
+    <form method="POST" action="/playlist/UpdatePlayList">
+
+        <input type="hidden" name="Id" value="@Model.PlayList.Id" />
+        <div class="form-group">
+
+            <label>Name</label>
+            <input type="text" name="Name" id="Name" class="form-control" value="@Model.PlayList.Name" />
+        </div>
+
+        <div class="form-group">
+            <label for="selectedsongs" class="form-label mt-4">Alege melodii:</label>
+            <select id="selectedsongs" name="SelectedSongs" class="form-select" fdprocessedid="090xsi" multiple>
+                @foreach (var song in Model.Songs)
+                {
+                    <option value="@song.Id">@song.Name</option>
+                }
+            </select>
+        </div>
+
+        <hr />
+        <input class="btn btn-outline-info m-2" type="submit" value="Adauga" />
+
+    </form>
+</div>

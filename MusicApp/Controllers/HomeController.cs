@@ -35,7 +35,29 @@ namespace MusicApp.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-  
+        public IActionResult PlaySong(int id)
+        {
+            var playList = new PlayList();
+            var playListSongMap = new List<PlayListSongMap>();
+            var songs = new List<Song>();
+
+            using (var context = new MyDBContext())
+            {
+                playList = context.PlayList.FirstOrDefault(a => a.Id == id);
+                playListSongMap = context.PlayListSongMap.ToList();
+                songs = context.Song.ToList();
+            }
+
+
+            var associatedSongs = playListSongMap
+                    .Where(map => map.PlayListId == id)
+                    .Join(songs, map => map.SongId, song => song.Id, (map, song) => song)
+                    .ToList();
+            return View(associatedSongs);
+
+        }
+
+
         //playlist
 
         //playlist end

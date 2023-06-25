@@ -9,6 +9,7 @@ namespace MusicApp.Data.Entities
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }
+        public string FilePath { get; set; }
 
     }
 }

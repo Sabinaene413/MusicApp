@@ -1,0 +1,31 @@
+﻿
+@using MusicApp.Data.Entities
+@model List<Song>
+
+<div class="music-player">
+    <div class="player-controls">
+        <a class="button" type="submit" formaction="/musicplayer/prev">Prev</a>
+        <a class="button" type="submit" href="/home/play">Play</a>
+        <a class="button" type="submit" formaction="/musicplayer/next">Next</a>
+    </div>
+
+    <ul class="song-list">
+        @foreach (var song in Model)
+        {
+            <li class="song-item">
+                
+                <div class="song-details">
+                    <h2>@song.Name</h2>
+                </div>
+ 
+                <audio controls>
+                    <source src="@song.FilePath">
+                </audio>
+                <audio controls>
+                    <source src="/Files/SoHigh.mp3">
+                </audio>
+            </li>
+        }
+    </ul>
+</div>
+
